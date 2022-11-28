@@ -258,7 +258,7 @@ float ln(float y)
 
 float pow(float x, float y)
 {
-    return exp(x * log(y));
+    return exp(x * ln(y));
 }
 
 #endif
