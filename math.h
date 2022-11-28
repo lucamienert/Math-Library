@@ -166,14 +166,14 @@ float ceil(float x);
 float exp(float x);
 
 /**
- * The log method returns the natural logarithm of a number, 
+ * The ln method returns the natural logarithm of a number, 
  * or the logarithm of number to base
  * 
  * @param {float} x
  * @param {float} y
  * @returns {float}
 */
-float log(float x, float y);
+float ln(float y);
 
 /**
  * The Method returns the value of x to the power of y (x^y)
@@ -231,21 +231,29 @@ float exp(float x)
     return p;
 }
 
-float log(float x)
+static inline int msb(int a)
 {
-    int yi = y;
-    int log2 = 0;
-    float x, r;
-
-    while (yi >>= 1)
-        log2++;
-
-    x = (float) (1 << log2);
-    x = y / x;
-    r = -1.7417939 + (2.8212026 + (-1.4699568 + (0.44717955 - 0.056570851 * x) * x) * x) * x;
-    r += 0.69314718 * log2;
-
+    unsigned int r = 0;
+    
+    while(a >>= 1)
+        r++;
+    
     return r;
+}
+
+float ln(float y)
+{
+    int log2;
+    float divisor, x, result;
+
+    log2 = msb((int)y);
+    divisor = (float)(1 << log2);
+    x = y / divisor;
+
+    result = -1.7417939 + (2.8212026 + (-1.4699568 + (0.44717955 - 0.056570851 * x) * x) * x) * x;
+    result += ((float)log2) * 0.69314718; // ln(2) = 0.69314718
+
+    return result;
 }
 
 float pow(float x, float y)
